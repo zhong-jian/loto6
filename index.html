@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+
+	<meta charset="utf-8">
+
+    <link rel="stylesheet" href="kakou.css"></script>
+
+	<link rel="stylesheet" href="onsenui.css"/>
+	<link rel="stylesheet" href="onsen-css-components.css"/>
+	<!--<link rel="stylesheet" href="./material-design-iconic-font/css/material-design-iconic-font.css"/>-->
+	<!--<link rel="stylesheet" href="./ionicons/css/ionicons.css"/>-->
+	<!--<link rel="stylesheet" href="./font_awesome/css/font-awesome.css"/>-->
+
+	<script src="onsenui.min.js"></script>
+
+	<script src="http://cdn1.lncld.net/static/js/3.0.2/av-min.js"></script>
+
+	<script src="abcdefghijk.js"></script>
+	<script src="app.js"></script>
+
+</head>
+
+<body>
+
+<ons-splitter>
+  <ons-splitter-side id="menu" side="left" width="220px" collapse swipeable>
+    <ons-page>
+      <ons-list>
+        <ons-list-item onclick="fn.load('home.html')" tappable>
+          当選番号入力
+        </ons-list-item>
+        <ons-list-item onclick="fn.load('settings.html')" tappable>
+          はずれ回数
+        </ons-list-item>
+        <ons-list-item onclick="fn.load('heikin.html')" tappable>
+          各平均値
+        </ons-list-item>
+        <ons-list-item onclick="fn.load('yosou.html')" tappable>
+          予想
+        </ons-list-item>
+      </ons-list>
+    </ons-page>
+  </ons-splitter-side>
+  <ons-splitter-content id="content" page="home.html"></ons-splitter-content>
+</ons-splitter>
+
+<template id="home.html">
+  <ons-page>
+    <ons-toolbar>
+      <div class="left">
+        <ons-toolbar-button onclick="fn.open()">
+          <ons-icon icon="md-menu"></ons-icon>
+        </ons-toolbar-button>
+      </div>
+      <div class="center">
+        当選番号入力
+      </div>
+    </ons-toolbar>
+    <p style="text-align: center; opacity: 0.6; padding-top: 20px;">
+
+		<div style="text-align: center; margin-top: 30px;">
+			<p><ons-input id="kaibetsu" modifier="underbar" type="number" placeholder="回別" float></ons-input></p>
+			<p><ons-input id="hit1" modifier="underbar" type="number" placeholder="hit 1" float></ons-input></p>
+			<p><ons-input id="hit2" modifier="underbar" type="number" placeholder="hit 2" float></ons-input></p>
+			<p><ons-input id="hit3" modifier="underbar" type="number" placeholder="hit 3" float></ons-input></p>
+			<p><ons-input id="hit4" modifier="underbar" type="number" placeholder="hit 4" float></ons-input></p>
+			<p><ons-input id="hit5" modifier="underbar" type="number" placeholder="hit 5" float></ons-input></p>
+			<p><ons-input id="hit6" modifier="underbar" type="number" placeholder="hit 6" float></ons-input></p>
+			<p><ons-input id="bonus" modifier="underbar" type="number" placeholder="ボーナス" float></ons-input></p>
+		<div>
+
+		<ons-button onclick="touroku()">
+			登録
+		</ons-button>
+
+    </p>
+  </ons-page>
+</template>
+
+<template id="settings.html">
+  <ons-page>
+    <ons-toolbar>
+      <div class="left">
+        <ons-toolbar-button onclick="fn.open()">
+          <ons-icon icon="md-menu"></ons-icon>
+        </ons-toolbar-button>
+      </div>
+      <div class="center">
+        はずれ回数
+      </div>
+    </ons-toolbar>
+
+    <p style="text-align: center; opacity: 0.6; padding-top: 20px;">
+		はずれ回数<br>
+		<ons-button onclick="hazure()">
+			開始
+		</ons-button>
+	</p>
+    <p style="text-align: center; opacity: 0.6; padding-top: 20px;">
+		はずれ回数の合計とＬ１０<br>
+		<ons-button onclick="goukei()">
+			開始
+		</ons-button>
+	</p>
+	<!--
+    <p style="text-align: center; opacity: 0.6; padding-top: 20px;">
+		組み合わせ<br>
+		<ons-button onclick="kumiawase()">
+			開始
+		</ons-button>
+	</p>
+	-->
+
+  </ons-page>
+</template>
+
+<template id="heikin.html">
+  <ons-page>
+    <ons-toolbar>
+      <div class="left">
+        <ons-toolbar-button onclick="fn.open()">
+          <ons-icon icon="md-menu"></ons-icon>
+        </ons-toolbar-button>
+      </div>
+      <div class="center">
+        各平均値
+      </div>
+    </ons-toolbar>
+
+    <p style="text-align: center; opacity: 0.6; padding-top: 20px;">
+		各平均値算出<br>
+		<ons-button onclick="heikin()">
+			開始
+		</ons-button>
+	</p>
+
+  </ons-page>
+</template>
+
+<template id="yosou.html">
+  <ons-page>
+    <ons-toolbar>
+      <div class="left">
+        <ons-toolbar-button onclick="fn.open()">
+          <ons-icon icon="md-menu"></ons-icon>
+        </ons-toolbar-button>
+      </div>
+      <div class="center">
+        当選予想
+      </div>
+    </ons-toolbar>
+
+    <p style="text-align: center; opacity: 0.6; padding-top: 20px;">
+
+		<ons-button onclick="yosou()">
+			開始
+		</ons-button>
+	</p>
+
+  </ons-page>
+</template>
+
+<ons-modal direction="up">
+	<div style="text-align: center">
+		<p>
+			<ons-icon icon="md-spinner" size="28px" spin></ons-icon> Loading...
+		</p>
+	</div>
+</ons-modal>
+
+</body>
+</html>
+
+<!--test-->>

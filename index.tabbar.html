@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="my-app">
+<head>
+  <meta charset="utf-8">
+
+  <link rel="stylesheet" href="onsenui.css"/>
+  <link rel="stylesheet" href="onsen-css-components.css"/>
+  <link rel="stylesheet" href="./material-design-iconic-font/css/material-design-iconic-font.css"/>
+  <link rel="stylesheet" href="./ionicons/css/ionicons.css"/>
+  <link rel="stylesheet" href="./font_awesome/css/font-awesome.css"/>
+
+  <script src="angular.min.js"></script>
+  <script src="onsenui.min.js"></script>
+  <script src="angular-onsenui.js"></script>
+
+  <script>
+	var module = angular.module('my-app', ['onsen']);
+	module.controller('PageController', function($scope) {
+	  $scope.alert = function(message) {
+	    console.log(2);
+	    ons.notification.alert(message);
+	  };
+	});
+  </script>
+
+</head>
+
+<body>
+  <ons-page ng-controller="PageController as app">
+    <ons-toolbar>
+      <div class="center">My App - {{app.title}}</div>
+    </ons-toolbar>
+
+    <ons-tabbar swipeable position="auto">
+      <ons-tab page="tab1.html" label="LOTO6 1" icon="ion-home, material:md-home" active>
+      </ons-tab>
+      <ons-tab page="tab2.html" label="LOTO6 2" icon="md-settings" active-icon="md-face">
+      </ons-tab>
+    </ons-tabbar>
+
+  </ons-page>
+
+  <template id="tab1.html">
+   <ons-page id="Tab1" ons-show="app.title = 'LOTO6 1'">
+      <p style="text-align: center;">
+        This is the first page.
+      </p>
+   </ons-page>
+  </template>
+
+  <template id="tab2.html">
+    <ons-page id="Tab2" ons-show="app.title = 'LOTO6 2'">
+      <p style="text-align: center;">
+        This is the second page.
+
+        <p style="text-align: center">
+          <ons-button ng-click="alert('Hello World!')">
+          <!--<ons-button ng-click="console.log(111)">-->
+            Click me!
+          </ons-button>
+        </p>
+
+      </p>
+
+    </ons-page>
+  </template>
+</body>
+</html>
