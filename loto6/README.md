@@ -1,0 +1,2 @@
+# loto6
+test
