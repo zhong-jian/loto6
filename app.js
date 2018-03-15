@@ -1024,7 +1024,8 @@ var yosou = function() {
     var promises = [
         lcSelHazureKaisuheikin(),
         lcTousenBangoheikin(),
-		lcSelHazureKaisuyosou(output)
+		lcSelHazureKaisuyosou(output),
+		lcShimohitoketaSel()
     ];
     Promise.all(promises)
 	  .then(function(results) {
@@ -1033,10 +1034,17 @@ var yosou = function() {
 			var gusuheikin = results[1].gusu / 10;
 			var daiheikin = results[1].dai / 10;
 			var goukei2heikin = results[1].goukei / 10;
+			var shimohitoketa = "";
+			for (var i = 0; i < results[3].numcnt; i++ ) {
+				shimohitoketa = shimohitoketa + results[3].num[i];
+				if ( i != results[3].numcnt - 1) {
+					shimohitoketa = shimohitoketa + ", ";
+				}
+			}
 			console.log("yosou end");
 	        ons.notification.alert({
 	            title: output[0] + ' ' + output[1] + ' ' + output[2] + ' ' + output[3] + ' ' + output[4] + ' ' + output[5],
-	            messageHTML: '<BR>入力数値はずれ回数合計：' + results[2].haznum + '<BR>' + '　はずれ回数合計平均：' + goukeiheikin + '<BR><BR>' + 'ホットナンバー：' + results[2].hotcnt + '<BR>' + '　Ｌ１０平均：' + l10heikin + '<BR><BR>' + '偶数値：' + gusu + '<BR>' + '　偶数平均：' + gusuheikin + '<BR><BR>' + '大数値：' + dai + '<BR>' + '　大数値平均：' + daiheikin + '<BR><BR>' + '合計：' + goukei + '<BR>' + '　合計平均：' + goukei2heikin,
+	            messageHTML: '<BR>入力数値はずれ回数合計：' + results[2].haznum + '<BR>' + '　はずれ回数合計平均：' + goukeiheikin + '<BR><BR>' + 'ホットナンバー：' + results[2].hotcnt + '<BR>' + '　Ｌ１０平均：' + l10heikin + '<BR><BR>' + '偶数値：' + gusu + '<BR>' + '　偶数平均：' + gusuheikin + '<BR><BR>' + '大数値：' + dai + '<BR>' + '　大数値平均：' + daiheikin + '<BR><BR>' + '合計：' + goukei + '<BR>' + '　合計平均：' + goukei2heikin + '<BR><BR>' + '　下一桁：' + shimohitoketa,
 	            buttonLabel: 'OK',
 				modifier: 'tokubetsu',
 	            animation: 'default',
@@ -1055,6 +1063,62 @@ var yosou = function() {
             }
         });
 	});
+};
+
+var lcShimohitoketaSel = function(arg) {
+    return new Promise(function(resolve, reject) {
+
+		console.log("lcShimohitoketaSel start");
+
+		var object;
+		var output = [];
+
+		var shimoMAX = {};
+		shimoMAX.num = [];
+		var cnt = 0;
+
+        var query = new AV.Query('ShimohitoketaTable');
+		query.limit(1);
+        query.find().then(function (results) {
+			object = results[0];
+
+			output[0] = object.get("s0");
+			output[1] = object.get("s1");
+			output[2] = object.get("s2");
+			output[3] = object.get("s3");
+			output[4] = object.get("s4");
+			output[5] = object.get("s5");
+			output[6] = object.get("s6");
+			output[7] = object.get("s7");
+			output[8] = object.get("s8");
+			output[9] = object.get("s9");
+
+			for ( i = 0; i < 10; i++ ) {
+				if ( i === 0 ) {
+					shimoMAX.cnt = output[i];
+					shimoMAX.num[cnt] = i;
+					cnt = cnt + 1;
+				} else {
+					if ( shimoMAX.cnt < output[i] ) {
+						cnt = 0;
+						shimoMAX.cnt = output[i];
+						shimoMAX.num[cnt] = i;
+						cnt = cnt + 1;
+					} else if ( shimoMAX.cnt === output[i] ) {
+						shimoMAX.num[cnt] = i;
+						cnt = cnt + 1;
+					}
+				}
+			}
+			shimoMAX.numcnt = cnt;
+
+			console.log("lcShimohitoketaSel end");
+			resolve(shimoMAX);
+        }, function (error) {
+            console.log("ShimohitoketaTable Fetch NG "  + error);
+            reject("ShimohitoketaTable Fetch NG " + error);
+        });
+    });
 };
 
 var lcSelHazureKaisuyosou = function(arg) {
@@ -1112,6 +1176,7 @@ var lcSelHazureKaisuyosou = function(arg) {
     });
 };
 
+
 var shimohitoketa = function() {
 
 /*
@@ -1120,7 +1185,8 @@ var shimohitoketa = function() {
 
 	lcfindShimohitoketa()
 	  .then(lccheckTousenBango2)
-	  .then(lcInsHazureKaisu)
+	  .then(SHTBtotugou)
+	  .then(lcUpdShimohitoketa)
 	  .then(function(results) {
 			console.log("shimohitoketa OK");
 			ons.notification.alert("正常終了！");
@@ -1159,6 +1225,8 @@ var lcfindShimohitoketa = function() {
             output.s8  = object.get("s8");
             output.s9  = object.get("s9");
 
+			console.log("kaibetsu = " + output.kaibetsu);
+
 			var storage = localStorage;
 			storage.setItem("SHIMOHITOKETA", JSON.stringify(output));
 
@@ -1189,8 +1257,8 @@ var lccheckTousenBango2 = function() {
         query.find().then(function (results) {
             var object = results[0];
             kaibetsu = object.get("kaibetsu");
-			console.log("kaibetsu = " + kaibetsu);
-			console.log("input.kaibetsu = " + input.kaibetsu);
+			console.log("TB kaibetsu = " + kaibetsu);
+			console.log("SH input.kaibetsu = " + input.kaibetsu);
 			if ( kaibetsu === input.kaibetsu ) {
 				reject("下一桁数字は最新の状態です。");
 			} else if ( kaibetsu > input.kaibetsu ) {
@@ -1220,8 +1288,8 @@ var lccheckTousenBango2 = function() {
     });
 };
 
-var lcUpdShimohitoketa = function(tousenbango) {	
-    return new Promise(function(resolve2, reject) {
+var SHTBtotugou = function(tousenbango) {	
+    return new Promise(function(resolve, reject) {
 
 		console.log("lcUpdShimohitoketa start");
 		var storage = localStorage;
@@ -1235,17 +1303,23 @@ var lcUpdShimohitoketa = function(tousenbango) {
             output.kaibetsu = output.kaibetsu + 1;
 
 			var shimo1 = tousenbango[i].hit1;
-			if ( shimo1.length != 1 ) shimo1 = shimo1.substr(1,1);
+			//console.log("tousenbango[" + i + "].hit1 = " + tousenbango[i].hit1);
+			//console.log("String(shimo1).length = " + String(shimo1).length);
+			if ( String(shimo1).length != 1 ) shimo1 = Number(String(shimo1).substr(1,1));
 			var shimo2 = tousenbango[i].hit2;
-			if ( shimo2.length != 1 ) shimo2 = shimo2.substr(1,1);
+
+			console.log("tousenbango[" + i + "].hit2 = " + tousenbango[i].hit2);
+			console.log("String(shimo2).length = " + String(shimo2).length);
+
+			if ( String(shimo2).length != 1 ) shimo2 = Number(String(shimo2).substr(1,1));
 			var shimo3 = tousenbango[i].hit3;
-			if ( shimo3.length != 1 ) shimo3 = shimo3.substr(1,1);
+			if ( String(shimo3).length != 1 ) shimo3 = Number(String(shimo3).substr(1,1));
 			var shimo4 = tousenbango[i].hit4;
-			if ( shimo4.length != 1 ) shimo4 = shimo4.substr(1,1);
+			if ( String(shimo4).length != 1 ) shimo4 = Number(String(shimo4).substr(1,1));
 			var shimo5 = tousenbango[i].hit5;
-			if ( shimo5.length != 1 ) shimo5 = shimo5.substr(1,1);
+			if ( String(shimo5).length != 1 ) shimo5 = Number(String(shimo5).substr(1,1));
 			var shimo6 = tousenbango[i].hit6;
-			if ( shimo6.length != 1 ) shimo6 = shimo6.substr(1,1);
+			if ( String(shimo6).length != 1 ) shimo6 = Number(String(shimo6).substr(1,1));
 
 			for (var j = 0; j < 10; j++) {
 				suji = j;
@@ -1267,37 +1341,51 @@ var lcUpdShimohitoketa = function(tousenbango) {
 						output['s' + suji] = output['s' + suji] + 1; break;
 				}
 			}
-            promises.push(omotaiPromise(output));
         }
-        Promise.all(promises)
-          .then(function (results) {
-            // results配列の各要素で結果が取れる
-			console.log("lcUpdShimohitoketa end");
-            resolve2();
-        });
-
-        function omotaiPromise(output) {
-            return new Promise(function (resolve1, reject) {
-                
-				console.log("2 output.kaibetsu = " + output.kaibetsu);
-
-		        var shimohitoketa = AV.Object.createWithoutData('ShimohitoketaTable', output.objectid);
-		        shimohitoketa.set('s1', output.s1);
-		        shimohitoketa.set('s2', output.s2);
-		        shimohitoketa.set('s3', output.s3);
-		        shimohitoketa.set('s4', output.s4);
-		        shimohitoketa.set('s5', output.s5);
-		        shimohitoketa.set('s6', output.s6);
-		        shimohitoketa.set('s7', output.s7);
-		        shimohitoketa.set('s8', output.s8);
-		        shimohitoketa.set('s9', output.s9);
-		        shimohitoketa.set('s0', output.s0);
-		        shimohitoketa.set('kaibetsu', output.kaibetsu);
-
-		        shimohitoketa.save();
-				resolve1();
-    	    });
-    	}
-
+		console.log("SHTBtotugou end");
+        resolve(output);
     });
 };
+
+var lcUpdShimohitoketa = function(output) {
+    return new Promise(function(resolve, reject) {
+
+		console.log("lcUpdShimohitoketa start");
+		console.log("output.objectid = " + output.objectid);
+		console.log("output.kaibetsu = " + output.kaibetsu);
+		console.log("output.s0 = " + output.s0);
+		console.log("output.s1 = " + output.s1);
+		console.log("output.s2 = " + output.s2);
+		console.log("output.s3 = " + output.s3);
+		console.log("output.s4 = " + output.s4);
+		console.log("output.s5 = " + output.s5);
+		console.log("output.s6 = " + output.s6);
+		console.log("output.s7 = " + output.s7);
+		console.log("output.s8 = " + output.s8);
+		console.log("output.s9 = " + output.s9);
+
+        var shimohitoketa = AV.Object.createWithoutData('ShimohitoketaTable', output.objectid);
+/*
+		var acl = new AV.ACL();
+		acl.setPublicReadAccess(true);
+		acl.setWriteAccess("*", true);
+
+		shimohitoketa.setACL(acl);
+*/
+        shimohitoketa.set('s1', output.s1);
+        shimohitoketa.set('s2', output.s2);
+        shimohitoketa.set('s3', output.s3);
+        shimohitoketa.set('s4', output.s4);
+        shimohitoketa.set('s5', output.s5);
+        shimohitoketa.set('s6', output.s6);
+        shimohitoketa.set('s7', output.s7);
+        shimohitoketa.set('s8', output.s8);
+        shimohitoketa.set('s9', output.s9);
+        shimohitoketa.set('s0', output.s0);
+        shimohitoketa.set('kaibetsu', output.kaibetsu);
+
+        shimohitoketa.save();
+		resolve();
+    });
+};
+
