@@ -1,2 +1,0 @@
-# loto6
-test
