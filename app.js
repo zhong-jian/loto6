@@ -643,6 +643,15 @@ var lcTousenBangoheikin = function() {
 				output.gusu = output.gusu + object.get("gusu");
 				output.dai = output.dai + object.get("dai");
 				output.goukei = output.goukei + object.get("goukei");
+				if ( i === 0 ) {
+					output.saisin = [];
+					output.saisin[0] = object.get("hit1");
+					output.saisin[1] = object.get("hit2");
+					output.saisin[2] = object.get("hit3");
+					output.saisin[3] = object.get("hit4");
+					output.saisin[4] = object.get("hit5");
+					output.saisin[5] = object.get("hit6");
+				}
 			}
 			console.log("lcTousenBangoheikin end");
 			resolve(output);
@@ -1025,7 +1034,8 @@ var yosou = function() {
         lcSelHazureKaisuheikin(),
         lcTousenBangoheikin(),
 		lcSelHazureKaisuyosou(output),
-		lcShimohitoketaSel()
+		lcShimohitoketaSel(),
+		lcHippariSujiSel()
     ];
     Promise.all(promises)
 	  .then(function(results) {
@@ -1041,10 +1051,12 @@ var yosou = function() {
 					shimohitoketa = shimohitoketa + ", ";
 				}
 			}
+			var arunashi = "なし";
+			if (results[4] == true) { arunashi = "あり"; }
 			console.log("yosou end");
 	        ons.notification.alert({
 	            title: output[0] + ' ' + output[1] + ' ' + output[2] + ' ' + output[3] + ' ' + output[4] + ' ' + output[5],
-	            messageHTML: '<BR>入力数値はずれ回数合計：' + results[2].haznum + '<BR>' + '　はずれ回数合計平均：' + goukeiheikin + '<BR><BR>' + 'ホットナンバー：' + results[2].hotcnt + '<BR>' + '　Ｌ１０平均：' + l10heikin + '<BR><BR>' + '偶数値：' + gusu + '<BR>' + '　偶数平均：' + gusuheikin + '<BR><BR>' + '大数値：' + dai + '<BR>' + '　大数値平均：' + daiheikin + '<BR><BR>' + '合計：' + goukei + '<BR>' + '　合計平均：' + goukei2heikin + '<BR><BR>' + '　下一桁：' + shimohitoketa,
+	            messageHTML: '<BR>入力数値はずれ回数合計：' + results[2].haznum + '<BR>' + '　はずれ回数合計平均：' + goukeiheikin + '<BR><BR>' + 'ホットナンバー：' + results[2].hotcnt + '<BR>' + '　Ｌ１０平均：' + l10heikin + '<BR><BR>' + '偶数値：' + gusu + '<BR>' + '　偶数平均：' + gusuheikin + '<BR><BR>' + '大数値：' + dai + '<BR>' + '　大数値平均：' + daiheikin + '<BR><BR>' + '合計：' + goukei + '<BR>' + '　合計平均：' + goukei2heikin + '<BR><BR>' + '　下一桁：' + shimohitoketa + '<BR><BR>' + '　前回当選番号：' + results[1].saisin[0] + ', ' + results[1].saisin[1] + ', ' + results[1].saisin[2] + ', ' + results[1].saisin[3] + ', ' + results[1].saisin[4] + ', ' + results[1].saisin[5] + '<BR><BR>' + '　前回引っ張り：' + arunashi,
 	            buttonLabel: 'OK',
 				modifier: 'tokubetsu',
 	            animation: 'default',
@@ -1065,7 +1077,7 @@ var yosou = function() {
 	});
 };
 
-var lcShimohitoketaSel = function(arg) {
+var lcShimohitoketaSel = function() {
     return new Promise(function(resolve, reject) {
 
 		console.log("lcShimohitoketaSel start");
@@ -1117,6 +1129,31 @@ var lcShimohitoketaSel = function(arg) {
         }, function (error) {
             console.log("ShimohitoketaTable Fetch NG "  + error);
             reject("ShimohitoketaTable Fetch NG " + error);
+        });
+    });
+};
+
+var lcHippariSujiSel = function() {
+    return new Promise(function(resolve, reject) {
+
+		console.log("lcHippariSujiSel start");
+
+		var object;
+		var flg;
+
+        var query = new AV.Query('HippariSuji');
+		query.limit(1);
+        query.find().then(function (results) {
+			object = results[0];
+
+			flg = object.get("flg");
+			console.log("flg = " + flg);
+
+			console.log("lcHippariSujiSel end");
+			resolve(flg);
+        }, function (error) {
+            console.log("HippariSuji Fetch NG "  + error);
+            reject("HippariSuji Fetch NG " + error);
         });
     });
 };
@@ -1175,7 +1212,6 @@ var lcSelHazureKaisuyosou = function(arg) {
         });
     });
 };
-
 
 var shimohitoketa = function() {
 
@@ -1303,8 +1339,6 @@ var SHTBtotugou = function(tousenbango) {
             output.kaibetsu = output.kaibetsu + 1;
 
 			var shimo1 = tousenbango[i].hit1;
-			//console.log("tousenbango[" + i + "].hit1 = " + tousenbango[i].hit1);
-			//console.log("String(shimo1).length = " + String(shimo1).length);
 			if ( String(shimo1).length != 1 ) shimo1 = Number(String(shimo1).substr(1,1));
 			var shimo2 = tousenbango[i].hit2;
 
@@ -1389,3 +1423,86 @@ var lcUpdShimohitoketa = function(output) {
     });
 };
 
+var hippari = function() {
+
+	lcfindTousenBango()
+	  .then(lcUpdHippariSuji)
+	  .then(function(results) {
+			console.log("hippai OK");
+			ons.notification.alert("正常終了！");
+	})
+      .catch(function(e) {
+		console.log("hippari NG　" + e);
+        ons.notification.alert({
+            title: '処理中止！',
+            messageHTML: e,
+            buttonLabel: 'OK',
+            animation: 'default',
+            callback: function() {
+            }
+        });
+	});
+}
+
+var lcfindTousenBango = function() {
+    return new Promise(function(resolve, reject) {
+
+		console.log("lcfindTousenBango start");
+
+		var output = {};
+		var kaibetsu;
+
+        var query = new AV.Query('TousenBango');
+		query.descending('kaibetsu');
+		query.limit(2);
+        query.find().then(function (results) {
+            var object;
+			var hithip1 = [];
+			var hithip2 = [];
+			var flg = false;
+
+            object = results[0];
+			hithip1[0] = object.get("hit1");
+			hithip1[1] = object.get("hit2");
+			hithip1[2] = object.get("hit3");
+			hithip1[3] = object.get("hit4");
+			hithip1[4] = object.get("hit5");
+			hithip1[5] = object.get("hit6");
+
+            object = results[1];
+			hithip2[0] = object.get("hit1");
+			hithip2[1] = object.get("hit2");
+			hithip2[2] = object.get("hit3");
+			hithip2[3] = object.get("hit4");
+			hithip2[4] = object.get("hit5");
+			hithip2[5] = object.get("hit6");
+
+			for (var i = 0; i < 6; i++) {
+				for (var j = 0; j < 6; j++) {
+					if ( hithip1[i] === hithip2[j] ) {
+						flg = true;
+					}
+				}
+			}
+			resolve(flg);
+        }, function (error) {
+            console.log("TousenBango Fetch NG "  + err);
+            reject("TousenBango Fetch NG " + err);
+        });
+    });
+};
+
+var lcUpdHippariSuji = function(input) {
+    return new Promise(function(resolve, reject) {
+
+		console.log("lcUpdHippariSuji start");
+		console.log("input = " + input);
+		var objectid = "5aab655b9f5454250d8230df";
+
+        var hipparisuji = AV.Object.createWithoutData('HippariSuji', objectid);
+        hipparisuji.set('flg', input);
+        hipparisuji.save();
+		console.log("lcUpdHippariSuji end");
+		resolve();
+    });
+};
