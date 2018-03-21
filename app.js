@@ -1035,7 +1035,8 @@ var yosou = function() {
         lcTousenBangoheikin(),
 		lcSelHazureKaisuyosou(output),
 		lcShimohitoketaSel(),
-		lcHippariSujiSel()
+		lcHippariSujiSel(),
+		lcKatayoriChartSel()
     ];
     Promise.all(promises)
 	  .then(function(results) {
@@ -1045,6 +1046,7 @@ var yosou = function() {
 			var daiheikin = results[1].dai / 10;
 			var goukei2heikin = results[1].goukei / 10;
 			var shimohitoketa = "";
+			var katayori = "";
 			for (var i = 0; i < results[3].numcnt; i++ ) {
 				shimohitoketa = shimohitoketa + results[3].num[i];
 				if ( i != results[3].numcnt - 1) {
@@ -1053,10 +1055,17 @@ var yosou = function() {
 			}
 			var arunashi = "なし";
 			if (results[4] == true) { arunashi = "あり"; }
+			console.log("results[5].numcnt = " + results[5].numcnt);
+			for (var i = 0; i < results[5].numcnt; i++ ) {
+				katayori = katayori + results[5].num[i];
+				if ( i != results[5].numcnt - 1) {
+					katayori = katayori + ", ";
+				}
+			}
 			console.log("yosou end");
 	        ons.notification.alert({
 	            title: output[0] + ' ' + output[1] + ' ' + output[2] + ' ' + output[3] + ' ' + output[4] + ' ' + output[5],
-	            messageHTML: '<BR>入力数値はずれ回数合計：' + results[2].haznum + '<BR>' + '　はずれ回数合計平均：' + goukeiheikin + '<BR><BR>' + 'ホットナンバー：' + results[2].hotcnt + '<BR>' + '　Ｌ１０平均：' + l10heikin + '<BR><BR>' + '偶数値：' + gusu + '<BR>' + '　偶数平均：' + gusuheikin + '<BR><BR>' + '大数値：' + dai + '<BR>' + '　大数値平均：' + daiheikin + '<BR><BR>' + '合計：' + goukei + '<BR>' + '　合計平均：' + goukei2heikin + '<BR><BR>' + '　下一桁：' + shimohitoketa + '<BR><BR>' + '　前回当選番号：' + results[1].saisin[0] + ', ' + results[1].saisin[1] + ', ' + results[1].saisin[2] + ', ' + results[1].saisin[3] + ', ' + results[1].saisin[4] + ', ' + results[1].saisin[5] + '<BR><BR>' + '　前回引っ張り：' + arunashi,
+	            messageHTML: '<BR>入力数値はずれ回数合計：' + results[2].haznum + '<BR>' + '　はずれ回数合計平均：' + goukeiheikin + '<BR><BR>' + 'ホットナンバー：' + results[2].hotcnt + '<BR>' + '　Ｌ１０平均：' + l10heikin + '<BR><BR>' + '偶数値：' + gusu + '<BR>' + '　偶数平均：' + gusuheikin + '<BR><BR>' + '大数値：' + dai + '<BR>' + '　大数値平均：' + daiheikin + '<BR><BR>' + '合計：' + goukei + '<BR>' + '　合計平均：' + goukei2heikin + '<BR><BR>' + '　下一桁：' + shimohitoketa + '<BR><BR>' + '　前回当選番号：' + results[1].saisin[0] + ', ' + results[1].saisin[1] + ', ' + results[1].saisin[2] + ', ' + results[1].saisin[3] + ', ' + results[1].saisin[4] + ', ' + results[1].saisin[5] + '<BR>' + '　前回引っ張り：' + arunashi + '<BR><BR>' + '　偏りチャート：' + katayori,
 	            buttonLabel: 'OK',
 				modifier: 'tokubetsu',
 	            animation: 'default',
@@ -1154,6 +1163,66 @@ var lcHippariSujiSel = function() {
         }, function (error) {
             console.log("HippariSuji Fetch NG "  + error);
             reject("HippariSuji Fetch NG " + error);
+        });
+    });
+};
+
+var lcKatayoriChartSel = function() {
+    return new Promise(function(resolve, reject) {
+
+		console.log("lcKatayoriChartSel start");
+
+		var object;
+		var output = [];
+
+		var katayoriMAX = {};
+		katayoriMAX.num = [];
+		var cnt = 0;
+		var grp = [];
+
+        var query = new AV.Query('KatayoriChart');
+		query.limit(1);
+        query.find().then(function (results) {
+			object = results[0];
+
+			output[0] = object.get("k01_07");
+			output[1] = object.get("k08_14");
+			output[2] = object.get("k15_22");
+			output[3] = object.get("k23_29");
+			output[4] = object.get("k30_36");
+			output[5] = object.get("k37_43");
+
+			grp[0] = "1-7";
+			grp[1] = "8-14";
+			grp[2] = "15-22";
+			grp[3] = "23-29";
+			grp[4] = "30-36";
+			grp[5] = "37-43";
+
+			for ( i = 0; i < 6; i++ ) {
+				if ( i === 0 ) {
+					katayoriMAX.cnt = output[i];
+					katayoriMAX.num[cnt] = grp[i];
+					cnt = cnt + 1;
+				} else {
+					if ( katayoriMAX.cnt < output[i] ) {
+						cnt = 0;
+						katayoriMAX.cnt = output[i];
+						katayoriMAX.num[cnt] = grp[i];
+						cnt = cnt + 1;
+					} else if ( katayoriMAX.cnt === output[i] ) {
+						katayoriMAX.num[cnt] = grp[i];
+						cnt = cnt + 1;
+					}
+				}
+			}
+			katayoriMAX.numcnt = cnt;
+
+			console.log("lcKatayoriChartSel end");
+			resolve(katayoriMAX);
+        }, function (error) {
+            console.log("KatayoriChart Fetch NG "  + error);
+            reject("KatayoriChart Fetch NG " + error);
         });
     });
 };
@@ -1327,7 +1396,7 @@ var lccheckTousenBango2 = function() {
 var SHTBtotugou = function(tousenbango) {	
     return new Promise(function(resolve, reject) {
 
-		console.log("lcUpdShimohitoketa start");
+		console.log("SHTBtotugou start");
 		var storage = localStorage;
 		var str = storage.getItem("SHIMOHITOKETA");
 		var output = JSON.parse(str);
@@ -1506,3 +1575,190 @@ var lcUpdHippariSuji = function(input) {
 		resolve();
     });
 };
+
+var katayori = function() {
+
+/*
+	偏り具合を更新する。
+*/
+
+	lcfindKatayoriChart()
+	  .then(lccheckTousenBango3)
+	  .then(KCTBtotugou)
+	  .then(lcUpdKatayoriChart)
+	  .then(function(results) {
+			console.log("katayori OK");
+			ons.notification.alert("正常終了！");
+	})
+      .catch(function(e) {
+		console.log("katayori NG　" + e);
+        ons.notification.alert({
+            title: '処理中止！',
+            messageHTML: e,
+            buttonLabel: 'OK',
+            animation: 'default',
+            callback: function() {
+            }
+        });
+	});
+};
+
+var lcfindKatayoriChart = function() {
+    return new Promise(function(resolve, reject) {
+
+		var output = {};
+
+        var query = new AV.Query('KatayoriChart');
+        query.find().then(function (results) {
+            var object = results[0];
+			output.objectid = object.get("objectId")
+            output.kaibetsu = object.get("kaibetsu");
+            output.k01_07  = object.get("k01_07");
+            output.k08_14  = object.get("k08_14");
+            output.k15_22  = object.get("k15_22");
+            output.k23_29  = object.get("k23_29");
+            output.k30_36  = object.get("k30_36");
+            output.k37_43  = object.get("k37_43");
+
+			console.log("kaibetsu = " + output.kaibetsu);
+
+			var storage = localStorage;
+			storage.setItem("KATAYORI", JSON.stringify(output));
+
+            resolve();
+            console.log("KatayoriChart Fetch OK");
+        }, function (error) {
+            console.log("KatayoriChart Fetch NG "  + err);
+            reject("KatayoriChart Fetch NG " + err);
+        });
+
+    });
+};
+
+var lccheckTousenBango3 = function() {
+    return new Promise(function(resolve, reject) {
+
+		console.log("lccheckTousenBango3 start");
+		var storage = localStorage;
+		var str = storage.getItem("KATAYORI");
+		var input = JSON.parse(str);
+
+		var output = {};
+
+		var kaibetsu;
+
+        var query = new AV.Query('TousenBango');
+		query.descending('kaibetsu');
+        query.find().then(function (results) {
+            var object = results[0];
+            kaibetsu = object.get("kaibetsu");
+			console.log("TB kaibetsu = " + kaibetsu);
+			console.log("KC input.kaibetsu = " + input.kaibetsu);
+			if ( kaibetsu === input.kaibetsu ) {
+				reject("偏りチャートは最新の状態です。");
+			} else if ( kaibetsu > input.kaibetsu ) {
+				output.klength = kaibetsu - input.kaibetsu;
+				console.log("output.klength = " + output.klength);
+				for ( var i = 0; i < output.klength; i++ ) {
+					if ( i > 0 ) {
+						object = results[i];
+					}
+					output[i] = {};
+					output[i].hit1    = object.get("hit1");
+					output[i].hit2    = object.get("hit2");
+					output[i].hit3    = object.get("hit3");
+					output[i].hit4    = object.get("hit4");
+					output[i].hit5    = object.get("hit5");
+					output[i].hit6    = object.get("hit6");
+					output[i].kaibetsu = object.get("kaibetsu");
+					console.log("output[" + i + "].kaibetsu = " + output[i].kaibetsu);
+				}
+				console.log("lccheckTousenBango3 end");
+				resolve(output);
+			}
+        }, function (error) {
+            console.log("TousenBango Fetch NG "  + err);
+            reject("TousenBango Fetch NG " + err);
+        });
+    });
+};
+
+var KCTBtotugou = function(tousenbango) {	
+    return new Promise(function(resolve, reject) {
+
+		console.log("KCTBtotugou start");
+		var storage = localStorage;
+		var str = storage.getItem("KATAYORI");
+		var output = JSON.parse(str);
+
+        var promises = [];
+        var objectid;
+		var suji;
+
+		var tousen = [];
+
+        for (var i = tousenbango.klength - 1; i >= 0; i-- ) {
+            output.kaibetsu = output.kaibetsu + 1;
+
+			tousen[0] = tousenbango[i].hit1;
+			tousen[1] = tousenbango[i].hit2;
+			tousen[2] = tousenbango[i].hit3;
+			tousen[3] = tousenbango[i].hit4;
+			tousen[4] = tousenbango[i].hit5;
+			tousen[5] = tousenbango[i].hit6;
+
+			output.k01_07 = output.k01_07 + 1;
+			output.k08_14 = output.k08_14 + 1;
+			output.k15_22 = output.k15_22 + 1;
+			output.k23_29 = output.k23_29 + 1;
+			output.k30_36 = output.k30_36 + 1;
+			output.k37_43 = output.k37_43 + 1;
+
+			for (var j = 0; j < 6; j++) {
+				if ( tousen[j] >= 1  && tousen[j] <= 7  ) output.k01_07 = 0;
+				if ( tousen[j] >= 8  && tousen[j] <= 14 ) output.k08_14 = 0;
+				if ( tousen[j] >= 15 && tousen[j] <= 22 ) output.k15_22 = 0;
+				if ( tousen[j] >= 23 && tousen[j] <= 29 ) output.k23_29 = 0;
+				if ( tousen[j] >= 30 && tousen[j] <= 36 ) output.k30_36 = 0;
+				if ( tousen[j] >= 37 && tousen[j] <= 43 ) output.k37_43 = 0;
+			}
+        }
+		console.log("KCTBtotugou end");
+        resolve(output);
+    });
+};
+
+var lcUpdKatayoriChart = function(output) {
+    return new Promise(function(resolve, reject) {
+
+		console.log("lcUpdKatayoriChart start");
+		console.log("output.objectid = " + output.objectid);
+		console.log("output.kaibetsu = " + output.kaibetsu);
+		console.log("output.k01_07 = " + output.k01_07);
+		console.log("output.k08_14 = " + output.k08_14);
+		console.log("output.k15_22 = " + output.k15_22);
+		console.log("output.k23_29 = " + output.k23_29);
+		console.log("output.k30_36 = " + output.k30_36);
+		console.log("output.k37_43 = " + output.k37_43);
+
+        var katayorichart = AV.Object.createWithoutData('KatayoriChart', output.objectid);
+/*
+		var acl = new AV.ACL();
+		acl.setPublicReadAccess(true);
+		acl.setWriteAccess("*", true);
+
+		shimohitoketa.setACL(acl);
+*/
+        katayorichart.set('k01_07', output.k01_07);
+        katayorichart.set('k08_14', output.k08_14);
+        katayorichart.set('k15_22', output.k15_22);
+        katayorichart.set('k23_29', output.k23_29);
+        katayorichart.set('k30_36', output.k30_36);
+        katayorichart.set('k37_43', output.k37_43);
+        katayorichart.set('kaibetsu', output.kaibetsu);
+
+        katayorichart.save();
+		resolve();
+    });
+};
+
