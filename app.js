@@ -926,117 +926,9 @@ var yosou = function() {
 
 	console.log("yosou start");
 
-	/*
-
-	var gusu = 0;
-	var dai = 0;
-	var goukei = 0;
-
-	var r1 = Math.random();
-	var goukakuflg = false;	
-
-	while ( goukakuflg === false ) {
-		var flg = false;
-		var hit1 = Math.floor( r1*43+1 );
-		var hit2 = Math.floor( r1*43+1 );
-		while ( flg === false ) {
-			if ( hit2 != hit1 ) {
-				flg = true;
-			} else {
-				r1 = Math.random();
-				hit2 = Math.floor( r1*43+1 );
-			}
-		}
-		flg = false;
-		var hit3 = Math.floor( r1*43+1 );
-		while ( flg === false ) {
-			if ( hit3 != hit1 && hit3 != hit2 ) {
-				flg = true;
-			} else {
-				r1 = Math.random();
-				hit3 = Math.floor( r1*43+1 );
-			}
-		}
-		flg = false;
-		var hit4 = Math.floor( r1*43+1 );
-		while ( flg === false ) {
-			if ( hit4 != hit1 && hit4 != hit2 && hit4 != hit3 ) {
-				flg = true;
-			} else {
-				r1 = Math.random();
-				hit4 = Math.floor( r1*43+1 );
-			}
-		}
-		flg = false;
-		var hit5 = Math.floor( r1*43+1 );
-		while ( flg === false ) {
-			if ( hit5 != hit1 && hit5 != hit2 && hit5 != hit3 && hit5 != hit4 ) {
-				flg = true;
-			} else {
-				r1 = Math.random();
-				hit5 = Math.floor( r1*43+1 );
-			}
-		}
-		flg = false;
-		var hit6 = Math.floor( r1*43+1 );
-		while ( flg === false ) {
-			if ( hit6 != hit1 && hit6 != hit2 && hit6 != hit3 && hit6 != hit4 && hit6 != hit5 ) {
-				flg = true;
-			} else {
-				r1 = Math.random();
-				hit6 = Math.floor( r1*43+1 );
-			}
-		}
-
-		gusu = 0;
-		dai = 0;
-		goukei = 0;
-
-		if ( hit1 % 2 == 0 ) { gusu = gusu + 1; }
-		if ( hit2 % 2 == 0 ) { gusu = gusu + 1; }
-		if ( hit3 % 2 == 0 ) { gusu = gusu + 1; }
-		if ( hit4 % 2 == 0 ) { gusu = gusu + 1; }
-		if ( hit5 % 2 == 0 ) { gusu = gusu + 1; }
-		if ( hit6 % 2 == 0 ) { gusu = gusu + 1; }
-
-		if ( hit1 > 22 ) { dai = dai + 1; }
-		if ( hit2 > 22 ) { dai = dai + 1; }
-		if ( hit3 > 22 ) { dai = dai + 1; }
-		if ( hit4 > 22 ) { dai = dai + 1; }
-		if ( hit5 > 22 ) { dai = dai + 1; }
-		if ( hit6 > 22 ) { dai = dai + 1; }
-
-		goukei = hit1 + hit2 + hit3 + hit4 + hit5 + hit6;
-
-		if ( gusu > 1 && gusu < 5 ) {
-			if ( dai > 1 && dai < 5 ) {
-				if ( goukei > 119 && goukei < 161 ) {
-					goukakuflg = true;
-				}
-			}
-		}
-	}
-
-	console.log(hit1, hit2, hit3, hit4, hit5, hit6);
-
-	var output = [];
-	output[0] = hit1;
-	output[1] = hit2;
-	output[2] = hit3;
-	output[3] = hit4;
-	output[4] = hit5;
-	output[5] = hit6;
-
-	output.sort(function(a,b){
-  		return a-b;
-	});
-
-	*/
-
     var promises = [
 		lcSelHazureKaisuheikin(),
 		lcTousenBangoheikin(),
-		//lcSelHazureKaisuyosou(output),
 		lcSelHazureKaisuyosou(),
 		lcShimohitoketaSel(),
 		lcHippariSujiSel(),
@@ -1073,168 +965,175 @@ var yosou = function() {
 		var goukei = 0;
 
 		var r1 = Math.random();
-		var goukakuflg = false;	
 
-		var loopcnt = 0;
-		while ( goukakuflg === false ) {
-			loopcnt = loopcnt + 1;
-			console.log("ループ " + loopcnt + " 回目");
-			var flg = false;
-			var hit1 = Math.floor( r1*43+1 );
-			var hit2 = Math.floor( r1*43+1 );
-			while ( flg === false ) {
-				if ( hit2 != hit1 ) {
-					flg = true;
-				} else {
-					r1 = Math.random();
-					hit2 = Math.floor( r1*43+1 );
-				}
-			}
-			flg = false;
-			var hit3 = Math.floor( r1*43+1 );
-			while ( flg === false ) {
-				if ( hit3 != hit1 && hit3 != hit2 ) {
-					flg = true;
-				} else {
-					r1 = Math.random();
-					hit3 = Math.floor( r1*43+1 );
-				}
-			}
-			flg = false;
-			var hit4 = Math.floor( r1*43+1 );
-			while ( flg === false ) {
-				if ( hit4 != hit1 && hit4 != hit2 && hit4 != hit3 ) {
-					flg = true;
-				} else {
-					r1 = Math.random();
-					hit4 = Math.floor( r1*43+1 );
-				}
-			}
-			flg = false;
-			var hit5 = Math.floor( r1*43+1 );
-			while ( flg === false ) {
-				if ( hit5 != hit1 && hit5 != hit2 && hit5 != hit3 && hit5 != hit4 ) {
-					flg = true;
-				} else {
-					r1 = Math.random();
-					hit5 = Math.floor( r1*43+1 );
-				}
-			}
-			flg = false;
-			var hit6 = Math.floor( r1*43+1 );
-			while ( flg === false ) {
-				if ( hit6 != hit1 && hit6 != hit2 && hit6 != hit3 && hit6 != hit4 && hit6 != hit5 ) {
-					flg = true;
-				} else {
-					r1 = Math.random();
-					hit6 = Math.floor( r1*43+1 );
-				}
-			}
+		var output = [];
 
-			gusu = 0;
-			dai = 0;
-			goukei = 0;
+		var gokai = 0;
 
-			if ( hit1 % 2 == 0 ) { gusu = gusu + 1; }
-			if ( hit2 % 2 == 0 ) { gusu = gusu + 1; }
-			if ( hit3 % 2 == 0 ) { gusu = gusu + 1; }
-			if ( hit4 % 2 == 0 ) { gusu = gusu + 1; }
-			if ( hit5 % 2 == 0 ) { gusu = gusu + 1; }
-			if ( hit6 % 2 == 0 ) { gusu = gusu + 1; }
-
-			if ( hit1 > 22 ) { dai = dai + 1; }
-			if ( hit2 > 22 ) { dai = dai + 1; }
-			if ( hit3 > 22 ) { dai = dai + 1; }
-			if ( hit4 > 22 ) { dai = dai + 1; }
-			if ( hit5 > 22 ) { dai = dai + 1; }
-			if ( hit6 > 22 ) { dai = dai + 1; }
-
-			goukei = hit1 + hit2 + hit3 + hit4 + hit5 + hit6;
-
-			//console.log(1);
-			var hotcnt = 0;
-			if ( results[2].haz[hit1] < 11 ) hotcnt = hotcnt + 1;
-			if ( results[2].haz[hit2] < 11 ) hotcnt = hotcnt + 1;
-			if ( results[2].haz[hit3] < 11 ) hotcnt = hotcnt + 1;
-			if ( results[2].haz[hit4] < 11 ) hotcnt = hotcnt + 1;
-			if ( results[2].haz[hit5] < 11 ) hotcnt = hotcnt + 1;
-			if ( results[2].haz[hit6] < 11 ) hotcnt = hotcnt + 1;
-
-			var haznum = results[2].haz[hit1] + results[2].haz[hit2] + results[2].haz[hit3]
-							+ results[2].haz[hit4] + results[2].haz[hit5] + results[2].haz[hit6];
-			var output = [];
-			output[0] = hit1;
-			output[1] = hit2;
-			output[2] = hit3;
-			output[3] = hit4;
-			output[4] = hit5;
-			output[5] = hit6;
-
-			output.sort(function(a,b){
-		  		return a-b;
-			});
-
-			//console.log(2);
-			var shimo1flg = false;
-			for ( i = 0; i < results[3].numcnt; i++ ) {
-				for ( var j = 0; j < 6; j++ ) {
-					if ( String(output[j]).length == 2 ) {
-						var suji = Number(String(output[j]).substr(1.1));
+		while ( gokai < 5 ) {
+			var goukakuflg = false;
+			var loopcnt = 0;
+			while ( goukakuflg === false ) {
+				loopcnt = loopcnt + 1;
+				console.log("ループ " + loopcnt + " 回目");
+				var flg = false;
+				var hit1 = Math.floor( r1*43+1 );
+				var hit2 = Math.floor( r1*43+1 );
+				while ( flg === false ) {
+					if ( hit2 != hit1 ) {
+						flg = true;
 					} else {
-						var suji = output[j];
-					}
-					if ( suji === results[3].num[i] ) {
-						shimo1flg = true;
+						r1 = Math.random();
+						hit2 = Math.floor( r1*43+1 );
 					}
 				}
-			}
+				flg = false;
+				var hit3 = Math.floor( r1*43+1 );
+				while ( flg === false ) {
+					if ( hit3 != hit1 && hit3 != hit2 ) {
+						flg = true;
+					} else {
+						r1 = Math.random();
+						hit3 = Math.floor( r1*43+1 );
+					}
+				}
+				flg = false;
+				var hit4 = Math.floor( r1*43+1 );
+				while ( flg === false ) {
+					if ( hit4 != hit1 && hit4 != hit2 && hit4 != hit3 ) {
+						flg = true;
+					} else {
+						r1 = Math.random();
+						hit4 = Math.floor( r1*43+1 );
+					}
+				}
+				flg = false;
+				var hit5 = Math.floor( r1*43+1 );
+				while ( flg === false ) {
+					if ( hit5 != hit1 && hit5 != hit2 && hit5 != hit3 && hit5 != hit4 ) {
+						flg = true;
+					} else {
+						r1 = Math.random();
+						hit5 = Math.floor( r1*43+1 );
+					}
+				}
+				flg = false;
+				var hit6 = Math.floor( r1*43+1 );
+				while ( flg === false ) {
+					if ( hit6 != hit1 && hit6 != hit2 && hit6 != hit3 && hit6 != hit4 && hit6 != hit5 ) {
+						flg = true;
+					} else {
+						r1 = Math.random();
+						hit6 = Math.floor( r1*43+1 );
+					}
+				}
 
-			//console.log(3);
-			var zenkaiflg = false;
-			if ( results[4] === false ) {
-				for ( i = 0; i < 6; i++ ) {
-					for ( j = 0; j < 6; j++ ) {
-						if ( results[1].saisin[i] === output[j] ) {
-							zenkaiflg = true;
+				gusu = 0;
+				dai = 0;
+				goukei = 0;
+
+				if ( hit1 % 2 == 0 ) { gusu = gusu + 1; }
+				if ( hit2 % 2 == 0 ) { gusu = gusu + 1; }
+				if ( hit3 % 2 == 0 ) { gusu = gusu + 1; }
+				if ( hit4 % 2 == 0 ) { gusu = gusu + 1; }
+				if ( hit5 % 2 == 0 ) { gusu = gusu + 1; }
+				if ( hit6 % 2 == 0 ) { gusu = gusu + 1; }
+
+				if ( hit1 > 22 ) { dai = dai + 1; }
+				if ( hit2 > 22 ) { dai = dai + 1; }
+				if ( hit3 > 22 ) { dai = dai + 1; }
+				if ( hit4 > 22 ) { dai = dai + 1; }
+				if ( hit5 > 22 ) { dai = dai + 1; }
+				if ( hit6 > 22 ) { dai = dai + 1; }
+
+				goukei = hit1 + hit2 + hit3 + hit4 + hit5 + hit6;
+
+				//console.log(1);
+				var hotcnt = 0;
+				if ( results[2].haz[hit1] < 11 ) hotcnt = hotcnt + 1;
+				if ( results[2].haz[hit2] < 11 ) hotcnt = hotcnt + 1;
+				if ( results[2].haz[hit3] < 11 ) hotcnt = hotcnt + 1;
+				if ( results[2].haz[hit4] < 11 ) hotcnt = hotcnt + 1;
+				if ( results[2].haz[hit5] < 11 ) hotcnt = hotcnt + 1;
+				if ( results[2].haz[hit6] < 11 ) hotcnt = hotcnt + 1;
+
+				var haznum = results[2].haz[hit1] + results[2].haz[hit2] + results[2].haz[hit3]
+								+ results[2].haz[hit4] + results[2].haz[hit5] + results[2].haz[hit6];
+
+				output[gokai] = [];
+				output[gokai][0] = hit1;
+				output[gokai][1] = hit2;
+				output[gokai][2] = hit3;
+				output[gokai][3] = hit4;
+				output[gokai][4] = hit5;
+				output[gokai][5] = hit6;
+
+				output[gokai].sort(function(a,b){
+			  		return a-b;
+				});
+
+				//console.log(2);
+				var shimo1flg = false;
+				for ( i = 0; i < results[3].numcnt; i++ ) {
+					for ( var j = 0; j < 6; j++ ) {
+						if ( String(output[gokai][j]).length == 2 ) {
+							var suji = Number(String(output[gokai][j]).substr(1.1));
+						} else {
+							var suji = output[gokai][j];
+						}
+						if ( suji === results[3].num[i] ) {
+							shimo1flg = true;
 						}
 					}
 				}
-			} else {
-				zenkaiflg = true;
-			}
 
-			//console.log(4);
-			var katayoriflg = false;
-			for ( i = 0; i < results[5].numcnt; i++ ) {
-				if (results[5].num[i] === "15-22") {
-					var kata = 8;
+				//console.log(3);
+				var zenkaiflg = false;
+				if ( results[4] === false ) {
+					for ( i = 0; i < 6; i++ ) {
+						for ( j = 0; j < 6; j++ ) {
+							if ( results[1].saisin[i] === output[gokai][j] ) {
+								zenkaiflg = true;
+							}
+						}
+					}
 				} else {
-					var kata = 7;
+					zenkaiflg = true;
 				}
-				for ( j = 0; j < 6; j++ ) {
-					if ( results[5].num[i].substr(1,1) == "-" ) {
-						var x = 1;
-					} else {
-						var x = 2;
-					}
-					var suji = Number(results[5].num[i].substr(0,x));
-					if ( output[j] >= suji && output[j] <= suji + kata ) {
-						katayoriflg = true;
-					}
-				}
-			}
 
-			//console.log(5);
-			// ランダム生成数字判断
-			if ( gusu >= gusuheikin - 0.7 && gusu <= gusuheikin + 0.7 ) {
-				if ( dai >= daiheikin - 0.7 && dai <= daiheikin + 0.7 ) {
-					if ( goukei > 119 && goukei < 161 ) {
-						if ( haznum >= goukeiheikin - 10 && haznum <= goukeiheikin + 10 ) {
-							if ( hotcnt >= l10heikin - 1.7 && hotcnt <= l10heikin + 0.7 ) {
-								if ( shimo1flg == true ) {
-									if ( zenkaiflg == true ) {
-										if ( katayoriflg == true ) {
-											goukakuflg = true;
+				//console.log(4);
+				var katayoriflg = false;
+				for ( i = 0; i < results[5].numcnt; i++ ) {
+					if (results[5].num[i] === "15-22") {
+						var kata = 8;
+					} else {
+						var kata = 7;
+					}
+					for ( j = 0; j < 6; j++ ) {
+						if ( results[5].num[i].substr(1,1) == "-" ) {
+							var x = 1;
+						} else {
+							var x = 2;
+						}
+						var suji = Number(results[5].num[i].substr(0,x));
+						if ( output[gokai][j] >= suji && output[gokai][j] <= suji + kata ) {
+							katayoriflg = true;
+						}
+					}
+				}
+
+				//console.log(5);
+				// ランダム生成数字判断
+				if ( gusu >= gusuheikin - 0.7 && gusu <= gusuheikin + 0.7 ) {
+					if ( dai >= daiheikin - 0.7 && dai <= daiheikin + 0.7 ) {
+						if ( goukei > 119 && goukei < 161 ) {
+							if ( haznum >= goukeiheikin - 10 && haznum <= goukeiheikin + 10 ) {
+								if ( hotcnt >= l10heikin - 1.7 && hotcnt <= l10heikin + 0.7 ) {
+									if ( shimo1flg == true ) {
+										if ( zenkaiflg == true ) {
+											if ( katayoriflg == true ) {
+												goukakuflg = true;
+											}
 										}
 									}
 								}
@@ -1243,14 +1142,14 @@ var yosou = function() {
 					}
 				}
 			}
+			console.log(output[gokai][0], output[gokai][1], output[gokai][2], output[gokai][3], output[gokai][4], output[gokai][5]);
+			gokai = gokai + 1;
 		}
-
-		console.log(output[0], output[1], output[2], output[3], output[4], output[5]);
 
 		console.log("yosou end");
         ons.notification.alert({
-            title: output[0] + ' ' + output[1] + ' ' + output[2] + ' ' + output[3] + ' ' + output[4] + ' ' + output[5],
-            messageHTML: '<BR>入力数値はずれ回数合計：' + haznum + '<BR>' + '　はずれ回数合計平均：' + goukeiheikin + '<BR><BR>' + 'ホットナンバー：' + hotcnt + '<BR>' + '　Ｌ１０平均：' + l10heikin + '<BR><BR>' + '偶数値：' + gusu + '<BR>' + '　偶数平均：' + gusuheikin + '<BR><BR>' + '大数値：' + dai + '<BR>' + '　大数値平均：' + daiheikin + '<BR><BR>' + '合計：' + goukei + '<BR>' + '　合計平均：' + goukei2heikin + '<BR><BR>' + '　下一桁：' + shimohitoketa + '<BR><BR>' + '　前回当選番号：' + results[1].saisin[0] + ', ' + results[1].saisin[1] + ', ' + results[1].saisin[2] + ', ' + results[1].saisin[3] + ', ' + results[1].saisin[4] + ', ' + results[1].saisin[5] + '<BR>' + '　前回引っ張り：' + arunashi + '<BR><BR>' + '　偏りチャート：' + katayori,
+            title: output[0][0] + ' ' + output[0][1] + ' ' + output[0][2] + ' ' + output[0][3] + ' ' + output[0][4] + ' ' + output[0][5] + '<BR>' + output[1][0] + ' ' + output[1][1] + ' ' + output[1][2] + ' ' + output[1][3] + ' ' + output[1][4] + ' ' + output[1][5] + '<BR>' + output[2][0] + ' ' + output[2][1] + ' ' + output[2][2] + ' ' + output[2][3] + ' ' + output[2][4] + ' ' + output[2][5] + '<BR>' + output[3][0] + ' ' + output[3][1] + ' ' + output[3][2] + ' ' + output[3][3] + ' ' + output[3][4] + ' ' + output[3][5] + '<BR>' + output[4][0] + ' ' + output[4][1] + ' ' + output[4][2] + ' ' + output[4][3] + ' ' + output[4][4] + ' ' + output[4][5],
+            messageHTML: '<BR>' + 'はずれ回数合計平均：' + goukeiheikin + '<BR><BR>' + 'Ｌ１０平均：' + l10heikin + '<BR><BR>' + '偶数平均：' + gusuheikin + '<BR><BR>' + '　大数値平均：' + daiheikin + '<BR><BR>' + '合計平均：' + goukei2heikin + '<BR><BR>' + '下一桁：' + shimohitoketa + '<BR><BR>' + '前回当選番号：' + results[1].saisin[0] + ', ' + results[1].saisin[1] + ', ' + results[1].saisin[2] + ', ' + results[1].saisin[3] + ', ' + results[1].saisin[4] + ', ' + results[1].saisin[5] + '<BR>' + '前回引っ張り：' + arunashi + '<BR><BR>' + '偏りチャート：' + katayori,
             buttonLabel: 'OK',
 			modifier: 'tokubetsu',
             animation: 'default',
@@ -1412,63 +1311,6 @@ var lcKatayoriChartSel = function() {
     });
 };
 
-/*
-var lcSelHazureKaisuyosou = function(arg) {
-    return new Promise(function(resolve, reject) {
-
-		console.log("lcSelHazureKaisuyosou start");
-
-		var object;
-		var output = {};
-		var hotnum = [];
-		output.hotcnt = 0;
-
-        var query = new AV.Query('HazureKaisu');
-		query.descending('kaibetsu');
-		query.limit(1);
-        query.find().then(function (results) {
-			object = results[0];
-			output.haz1 = object.get(arg[0]);
-			output.haz2 = object.get(arg[1]);
-			output.haz3 = object.get(arg[2]);
-			output.haz4 = object.get(arg[3]);
-			output.haz5 = object.get(arg[4]);
-			output.haz6 = object.get(arg[5]);
-
-			if ( output.haz1 < 11 ) output.hotcnt = output.hotcnt + 1;
-			if ( output.haz2 < 11 ) output.hotcnt = output.hotcnt + 1;
-			if ( output.haz3 < 11 ) output.hotcnt = output.hotcnt + 1;
-			if ( output.haz4 < 11 ) output.hotcnt = output.hotcnt + 1;
-			if ( output.haz5 < 11 ) output.hotcnt = output.hotcnt + 1;
-			if ( output.haz6 < 11 ) output.hotcnt = output.hotcnt + 1;
-
-			output.haznum = output.haz1 + output.haz2 + output.haz3 + output.haz4 + output.haz5 + output.haz6;
-			// コメントアウト開始
-			output.l10 = output.l10 + object.get("l10");
-			output.goukei = output.goukei + object.get("goukei");
-			if ( i === 0 ) {
-				for ( var j = 0; j < 43; j++ ) {
-					suji = j + 1;
-					if ( object.get(suji) < 11 ) {
-						hotnum[hotcnt] = suji;
-						hotcnt = hotcnt + 1;
-					} else {
-						coldnum[coldcnt] = suji;
-						coldcnt = coldcnt + 1;
-					}
-				}
-			}
-			// コメントアウト終わり
-			console.log("lcSelHazureKaisuyosou end");
-			resolve(output);
-        }, function (error) {
-            console.log("HazureKaisu Fetch NG "  + error);
-            reject("HazureKaisu Fetch NG " + error);
-        });
-    });
-};
-*/
-
 var lcSelHazureKaisuyosou = function(arg) {
     return new Promise(function(resolve, reject) {
 
@@ -1478,7 +1320,6 @@ var lcSelHazureKaisuyosou = function(arg) {
 		var output = {};
 		output.haz = [];
 		var hotnum = [];
-		//output.hotcnt = 0;
 
         var query = new AV.Query('HazureKaisu');
 		query.descending('kaibetsu');
@@ -1488,22 +1329,6 @@ var lcSelHazureKaisuyosou = function(arg) {
 			for (var i = 0; i < 43; i++ ) {
 				output.haz[i] = object.get(i);
 			}
-			/*
-			output.haz1 = object.get(arg[0]);
-			output.haz2 = object.get(arg[1]);
-			output.haz3 = object.get(arg[2]);
-			output.haz4 = object.get(arg[3]);
-			output.haz5 = object.get(arg[4]);
-			output.haz6 = object.get(arg[5]);
-			
-			if ( output.haz1 < 11 ) output.hotcnt = output.hotcnt + 1;
-			if ( output.haz2 < 11 ) output.hotcnt = output.hotcnt + 1;
-			if ( output.haz3 < 11 ) output.hotcnt = output.hotcnt + 1;
-			if ( output.haz4 < 11 ) output.hotcnt = output.hotcnt + 1;
-			if ( output.haz5 < 11 ) output.hotcnt = output.hotcnt + 1;
-			if ( output.haz6 < 11 ) output.hotcnt = output.hotcnt + 1;
-			output.haznum = output.haz1 + output.haz2 + output.haz3 + output.haz4 + output.haz5 + output.haz6;
-			*/
 			console.log("lcSelHazureKaisuyosou end");
 			resolve(output);
         }, function (error) {
