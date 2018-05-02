@@ -1105,9 +1105,9 @@ var yosou = function() {
 				var katayoriflg = false;
 				for ( i = 0; i < results[5].numcnt; i++ ) {
 					if (results[5].num[i] === "15-22") {
-						var kata = 8;
-					} else {
 						var kata = 7;
+					} else {
+						var kata = 6;
 					}
 					for ( j = 0; j < 6; j++ ) {
 						if ( results[5].num[i].substr(1,1) == "-" ) {
